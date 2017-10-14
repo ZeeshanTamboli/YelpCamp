@@ -73,7 +73,14 @@ app.post("/campgrounds", function(req, res) {
 // ============================
 
 app.get("/campgrounds/:id/comments/new", function(req, res) {
-  res.render("comments/new");
+  //find by id
+  Campground.findById(req.params.id, function(err, campground) {
+    if(err) {
+      console.log(err);
+    } else {
+        res.render("comments/new", {campground: campground});
+    }
+  });
 });
 
 
