@@ -10,7 +10,7 @@ var express    = require("express"),
     seedDB     = require("./seeds");
 
 mongoose.Promise = global.Promise;
-mongoose.connect("mongodb://localhost:27017/yelp_camp_v3", {
+mongoose.connect("mongodb://localhost:27017/yelp_camp_v6", {
   useMongoClient: true,
 });
 
@@ -21,9 +21,18 @@ app.use(express.static(__dirname + "/public"));
 seedDB();
 
 
+//PASSPORT CONFIG
+app.use(require("express-session")({
+  secret: "I like books",
+  resave: false,
+  saveUninitialized: false
+}));
 
-
-
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 //INDEX
 app.get("/", function(req, res) {
@@ -116,6 +125,40 @@ app.post("/campgrounds/:id/comments", function(req, res) {
     }
   });
 });
+
+//======================
+//AUTHENTICATION ROUTES
+//======================
+
+//show register form
+app.get("/register", function(req, res){
+  res.render("register");
+});
+//handle signup logic
+app.post("/register", function(req, res) {
+  var newUser = new User({username: req.body.username});
+  User.register(newUser, req.body.password, function(err, user) {
+    if(err) {
+      console.log(err);
+      return res.render("register");
+    }
+    passport.authenticate("local")(req, res, function() {
+      res.redirect("/campgrounds");
+    });
+  });
+});
+
+//show login form
+app.get("/login", function(req, res) {
+  res.render("login");
+});
+//handling login logic
+app.post("/login", passport.authenticate("local", {
+    successRedirect: "/campgrounds",
+    failureRedirect: "/login"
+}), function(req, res) {
+});
+
 
 
 app.listen(3000, function() {
