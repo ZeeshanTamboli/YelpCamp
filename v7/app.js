@@ -9,6 +9,10 @@ var express    = require("express"),
     User       = require("./models/user"),
     seedDB     = require("./seeds");
 
+var commentRoutes    = require("./routes/comments"),
+    campgroundRoutes = require("./routes/campgrounds"),
+    indexRoutes       = require("./routes/index");
+
 mongoose.Promise = global.Promise;
 mongoose.connect("mongodb://localhost:27017/yelp_camp_v6", {
   useMongoClient: true,
