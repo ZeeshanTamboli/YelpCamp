@@ -9,6 +9,8 @@ var express    = require("express"),
     User       = require("./models/user"),
     seedDB     = require("./seeds");
 
+
+//requiring routes
 var commentRoutes    = require("./routes/comments"),
     campgroundRoutes = require("./routes/campgrounds"),
     indexRoutes       = require("./routes/index");
@@ -43,6 +45,9 @@ app.use(function(req, res, next) {
   next();
 });
 
+app.use("/", indexRoutes);
+app.use("/campgrounds/:id/comments", commentRoutes);
+app.use("/campgrounds", campgroundRoutes);
 
 app.listen(3000, function() {
   console.log("The YelpCamp Server Has Started!");
