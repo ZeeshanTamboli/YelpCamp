@@ -17,7 +17,7 @@ router.get("/", function(req, res) {
   });
 });
 
-//CREATE CAMPGROUND
+//SHOW NEW CAMPGROUND
 router.get("/new", middleware.isLoggedIn, function(req, res) {
   res.render("campgrounds/new");
 });
@@ -92,6 +92,7 @@ router.delete("/:id", middleware.checkCampgroundOwnership, function(req, res) {
     if (err) {
       res.redirect("/campgrounds");
     } else {
+      req.flash("success", "Campground deleted");
       res.redirect("/campgrounds");
     }
   });
